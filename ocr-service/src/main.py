@@ -1,6 +1,9 @@
 import time
-from fastapi import FastAPI, File, UploadFile
+import cv2
+import numpy as np
+from fastapi import FastAPI, File, UploadFile, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from paddleocr import PaddleOCR
 
 app = FastAPI(
     title="Intelligent OCR Microservice",
@@ -17,6 +20,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Initialize PaddleOCR engine globally (downloads French/English models on first launch)
+ocr_engine = PaddleOCR(use_angle_cls=True, lang='fr')
+
 
 @app.get("/api/health")
 async def health_check():
@@ -27,21 +33,64 @@ async def health_check():
 @app.post("/api/ocr")
 async def extract_text(file: UploadFile = File(...)):
     """
-    Extract raw OCR text from an uploaded image file.
+    Extract raw OCR text from an uploaded image file using PaddleOCR.
     Accepts multipart/form-data with a file parameter.
     """
-    filename = file.filename or "uploaded_file"
-    return {
-        "success": True,
-        "text": f"Extracted text content from document: {filename}",
-        "confidence": 0.95
-    }
+    try:
+        contents = await file.read()
+        if not contents:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Empty file uploaded."
+            )
+
+        # Convert byte data to numpy array and decode into OpenCV image
+        nparr = np.frombuffer(contents, np.uint8)
+        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+        if image is None:
+            raise HTTPException(
+                status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+                detail="Could not decode image. Please upload a valid image file (PNG, JPEG, etc.)."
+            )
+
+        # Perform OCR using PaddleOCR
+        result = ocr_engine.ocr(image)
+
+        extracted_lines = []
+        confidences = []
+
+        # Parse PaddleOCR output structure: list of pages/results
+        if result and len(result) > 0 and result[0] is not None:
+            for line in result[0]:
+                if len(line) >= 2 and isinstance(line[1], (tuple, list)):
+                    text_str = line[1][0]
+                    confidence_score = float(line[1][1])
+                    extracted_lines.append(text_str)
+                    confidences.append(confidence_score)
+
+        combined_text = "\n".join(extracted_lines)
+        avg_confidence = round(float(np.mean(confidences)), 4) if confidences else 0.0
+
+        return {
+            "success": True,
+            "text": combined_text,
+            "confidence": avg_confidence
+        }
+
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"OCR processing failed: {str(e)}"
+        )
 
 
 @app.post("/api/ocr/analyze")
 async def analyze_document(file: UploadFile = File(...)):
     """
-    Intelligent document analysis endpoint.
+    Intelligent document analysis endpoint (dummy placeholder for analysis workflow).
     Classifies document type and extracts structured domain metadata.
     """
     filename = file.filename or "uploaded_file"
