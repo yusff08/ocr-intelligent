@@ -70,14 +70,18 @@ async def extract_text(file: UploadFile = File(...)):
         extracted_lines = []
         confidences = []
 
-        # Parse PaddleOCR output structure: list of pages/results
-        if result and len(result) > 0 and result[0] is not None:
-            for line in result[0]:
-                if len(line) >= 2 and isinstance(line[1], (tuple, list)):
-                    text_str = line[1][0]
-                    confidence_score = float(line[1][1])
-                    extracted_lines.append(text_str)
-                    confidences.append(confidence_score)
+        if result and len(result) > 0:
+            res = result[0]
+            # Check if PaddleOCR returned the PaddleX dictionary structure
+            if isinstance(res, dict):
+                extracted_lines = res.get('rec_texts', [])
+                confidences = res.get('rec_scores', [])
+            # Legacy tuple/list fallback
+            elif isinstance(res, list):
+                for line in res:
+                    if line and len(line) >= 2 and isinstance(line[1], (tuple, list)):
+                        extracted_lines.append(line[1][0])
+                        confidences.append(float(line[1][1]))
 
         combined_text = "\n".join(extracted_lines)
         avg_confidence = round(float(np.mean(confidences)), 4) if confidences else 0.0
