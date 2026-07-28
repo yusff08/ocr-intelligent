@@ -24,8 +24,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize PaddleOCR engine globally with MKLDNN disabled
-ocr_engine = PaddleOCR(use_angle_cls=True, lang='fr', use_mkldnn=False)
+# Initialize PaddleOCR engine globally (PaddleOCR v3+ API format)
+ocr_engine = PaddleOCR(use_textline_orientation=True, lang='fr')
 
 
 @app.get("/api/health")
