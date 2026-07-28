@@ -26,8 +26,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize PaddleOCR engine globally (PaddleOCR v3+ API format)
-ocr_engine = PaddleOCR(use_textline_orientation=True, lang='fr')
+# Initialize PaddleOCR engine globally (English/French support)
+ocr_engine = PaddleOCR(use_textline_orientation=True, lang='en')
 
 
 @app.get("/api/health")
@@ -60,8 +60,12 @@ async def extract_text(file: UploadFile = File(...)):
                 detail="Could not decode image. Please upload a valid image file (PNG, JPEG, etc.)."
             )
 
+        # Convert BGR (OpenCV default) to RGB for PaddleOCR
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
         # Perform OCR using PaddleOCR
         result = ocr_engine.ocr(image)
+        print("Raw PaddleOCR output:", result)
 
         extracted_lines = []
         confidences = []
