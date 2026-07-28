@@ -1,3 +1,7 @@
+import os
+# Disable PIR API to prevent PaddlePaddle OneDNN ConvertPirAttribute2RuntimeAttribute errors
+os.environ['FLAGS_enable_pir_api'] = '0'
+
 import time
 import cv2
 import numpy as np
@@ -20,8 +24,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize PaddleOCR engine globally (downloads French/English models on first launch)
-ocr_engine = PaddleOCR(use_angle_cls=True, lang='fr')
+# Initialize PaddleOCR engine globally with MKLDNN disabled
+ocr_engine = PaddleOCR(use_angle_cls=True, lang='fr', use_mkldnn=False)
 
 
 @app.get("/api/health")
