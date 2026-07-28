@@ -1,6 +1,8 @@
 import os
-# Disable PIR API to prevent PaddlePaddle OneDNN ConvertPirAttribute2RuntimeAttribute errors
+
+# Environment variable configurations before importing PaddleOCR / PaddlePaddle
 os.environ['FLAGS_enable_pir_api'] = '0'
+os.environ['PADDLE_PDX_ENABLE_MKLDNN_BYDEFAULT'] = '0'
 
 import time
 import cv2
