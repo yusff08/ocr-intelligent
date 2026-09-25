@@ -89,3 +89,4 @@ PaddleOCR v3 returns a dictionary structure containing `rec_texts` and `rec_scor
 
 - Primary active branches: `main` and `develop`.
 - Write clear, concise Git commit messages documenting functional changes and bug fixes.
+- Never run `git commit` or `git push` without explicit user permission.

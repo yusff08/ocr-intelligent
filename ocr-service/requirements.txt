@@ -5,3 +5,17 @@ paddleocr
 paddlepaddle
 opencv-python-headless
 numpy
+openai
+pydantic
+python-dotenv
+arabic-reshaper
+python-bidi
+sqlalchemy
+passlib[bcrypt]
+python-jose[cryptography]
+pyjwt
+pytest
+httpx
+pytest-asyncio
+pdf2image
+pypdf

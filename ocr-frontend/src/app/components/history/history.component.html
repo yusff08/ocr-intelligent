@@ -1,0 +1,241 @@
+<div class="ios-history-container">
+  
+  <!-- iOS Page Header -->
+  <div class="ios-header-row">
+    <div class="header-titles">
+      <h2>Scan History</h2>
+      <p>Processed OCR documents & extracted AI data</p>
+    </div>
+    <button (click)="loadHistory()" class="btn-ios-refresh" title="Reload History">
+      <span class="material-symbols-outlined">refresh</span>
+    </button>
+  </div>
+
+  <!-- iOS Glassmorphic Search Bar -->
+  <div class="ios-search-wrapper">
+    <span class="material-symbols-outlined search-icon">search</span>
+    <input 
+      type="text" 
+      [(ngModel)]="searchQuery" 
+      placeholder="Search vendor, invoice #, filename..." 
+      class="ios-search-input"
+    />
+    <button *ngIf="searchQuery" (click)="searchQuery = ''" class="btn-clear-search">
+      <span class="material-symbols-outlined">cancel</span>
+    </button>
+  </div>
+
+  <!-- iOS Segmented Control Pills -->
+  <div class="ios-segmented-control">
+    <button 
+      (click)="setSelectedType('ALL')" 
+      [class.active]="selectedType === 'ALL'" 
+      class="segment-pill">
+      All ({{ documents.length }})
+    </button>
+    <button 
+      (click)="setSelectedType('invoice')" 
+      [class.active]="selectedType === 'invoice'" 
+      class="segment-pill">
+      Invoices
+    </button>
+    <button 
+      (click)="setSelectedType('receipt')" 
+      [class.active]="selectedType === 'receipt'" 
+      class="segment-pill">
+      Receipts
+    </button>
+    <button 
+      (click)="setSelectedType('generic')" 
+      [class.active]="selectedType === 'generic'" 
+      class="segment-pill">
+      Generic
+    </button>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="ios-loading-card">
+    <div class="ios-spinner"></div>
+    <p>Loading History...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage" class="error-banner">
+    ⚠️ {{ errorMessage }}
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !errorMessage && filteredHistory.length === 0" class="ios-empty-card">
+    <span class="material-symbols-outlined empty-icon">folder_open</span>
+    <h3>No Scans Found</h3>
+    <p>Upload an invoice or receipt to populate your history.</p>
+    <a routerLink="/dashboard" class="btn-ios-action">Snap New Document →</a>
+  </div>
+
+  <!-- iOS Inset Grouped Card List -->
+  <div *ngIf="!isLoading && filteredHistory.length > 0" class="ios-grouped-list">
+    <div 
+      *ngFor="let doc of filteredHistory" 
+      class="ios-inset-card" 
+      (click)="openBottomSheet(doc, $event)">
+      
+      <div class="card-main-content">
+        <div class="doc-icon-box">
+          <span class="material-symbols-outlined">receipt_long</span>
+        </div>
+
+        <div class="doc-meta-info">
+          <div class="title-row">
+            <h4 class="vendor-name">{{ getVendorName(doc) }}</h4>
+            <span class="doc-badge" [ngClass]="doc.document_type || 'generic'">
+              {{ (doc.document_type || 'generic') | uppercase }}
+            </span>
+          </div>
+
+          <div class="filename-row">{{ doc.filename }}</div>
+
+          <div class="sub-row">
+            <span class="inv-num" *ngIf="getInvoiceNumber(doc) !== 'N/A'">#{{ getInvoiceNumber(doc) }} • </span>
+            <span class="doc-date">{{ doc.created_at | date:'mediumDate' }}</span>
+          </div>
+        </div>
+
+        <!-- Total Amount Pill -->
+        <div class="amount-pill">
+          <span class="amount-val">{{ getTotalAmount(doc) }}</span>
+          <span class="amount-curr">{{ getCurrency(doc) }}</span>
+        </div>
+      </div>
+
+      <div class="card-tap-hint">
+        <span>Tap to inspect details</span>
+        <span class="chevron">›</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Native iOS Bottom Sheet Drawer -->
+  <div *ngIf="isBottomSheetOpen && selectedDoc" class="ios-backdrop" (click)="closeBottomSheet()">
+    <div class="ios-bottom-sheet" (click)="$event.stopPropagation()">
+      
+      <!-- iOS Grab Handle Pill -->
+      <div class="sheet-grab-handle"></div>
+
+      <!-- Sheet Header -->
+      <div class="sheet-header">
+        <div class="sheet-header-left">
+          <span class="doc-badge" [ngClass]="selectedDoc.document_type || 'generic'">
+            {{ (selectedDoc.document_type || 'generic') | uppercase }}
+          </span>
+          <div>
+            <h3>{{ getVendorName(selectedDoc) }}</h3>
+            <span class="file-subtitle">{{ selectedDoc.filename }} • {{ selectedDoc.created_at | date:'medium' }}</span>
+          </div>
+        </div>
+
+        <button (click)="closeBottomSheet()" class="btn-close-sheet">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Sheet Tabs Navigation -->
+      <div class="sheet-segmented-nav">
+        <button (click)="sheetTab = 'details'" [class.active]="sheetTab === 'details'" class="sheet-tab">
+          Summary
+        </button>
+        <button (click)="sheetTab = 'items'" [class.active]="sheetTab === 'items'" class="sheet-tab">
+          Items ({{ getLineItems(selectedDoc).length }})
+        </button>
+        <button (click)="sheetTab = 'raw'" [class.active]="sheetTab === 'raw'" class="sheet-tab">
+          Raw Text
+        </button>
+        <button (click)="sheetTab = 'json'" [class.active]="sheetTab === 'json'" class="sheet-tab">
+          JSON
+        </button>
+      </div>
+
+      <!-- Sheet Body -->
+      <div class="sheet-body ios-scrollable">
+        
+        <!-- Tab 1: Grouped Summary Details -->
+        <div *ngIf="sheetTab === 'details'" class="sheet-grouped-section">
+          <div class="ios-grouped-row">
+            <span class="label">Vendor Name</span>
+            <span class="val vendor-color">{{ getVendorName(selectedDoc) }}</span>
+          </div>
+          <div class="ios-grouped-row">
+            <span class="label">Invoice Number</span>
+            <span class="val inv-color">{{ getInvoiceNumber(selectedDoc) }}</span>
+          </div>
+          <div class="ios-grouped-row">
+            <span class="label">Issue Date</span>
+            <span class="val">{{ getIssueDate(selectedDoc) }}</span>
+          </div>
+          <div class="ios-grouped-row">
+            <span class="label">Due Date</span>
+            <span class="val">{{ getDueDate(selectedDoc) }}</span>
+          </div>
+          <div class="ios-grouped-row">
+            <span class="label">Subtotal</span>
+            <span class="val">{{ getSubtotal(selectedDoc) }} {{ getCurrency(selectedDoc) }}</span>
+          </div>
+          <div class="ios-grouped-row">
+            <span class="label">Tax Amount</span>
+            <span class="val">{{ getTaxAmount(selectedDoc) }} {{ getCurrency(selectedDoc) }}</span>
+          </div>
+          <div class="ios-grouped-row highlight-row">
+            <span class="label">Total Amount</span>
+            <span class="val total-color">{{ getTotalAmount(selectedDoc) }} {{ getCurrency(selectedDoc) }}</span>
+          </div>
+        </div>
+
+        <!-- Tab 2: Line Items -->
+        <div *ngIf="sheetTab === 'items'" class="sheet-grouped-section">
+          <div *ngIf="getLineItems(selectedDoc).length > 0; else noItemsState" class="items-list">
+            <div *ngFor="let item of getLineItems(selectedDoc)" class="item-grouped-card">
+              <div class="item-desc">{{ item.description || item.name || 'N/A' }}</div>
+              <div class="item-sub">
+                <span>Qty: {{ item.quantity || 1 }} × {{ (item.unit_price || 0) | number:'1.2-2' }}</span>
+                <span class="item-price">{{ (item.total_price || 0) | number:'1.2-2' }} {{ getCurrency(selectedDoc) }}</span>
+              </div>
+            </div>
+          </div>
+          <ng-template #noItemsState>
+            <p class="empty-hint">No itemized breakdown extracted for this scan.</p>
+          </ng-template>
+        </div>
+
+        <!-- Tab 3: Raw Text -->
+        <div *ngIf="sheetTab === 'raw'" class="sheet-grouped-section">
+          <pre class="ios-code-box">{{ selectedDoc.raw_text || 'No raw text stored.' }}</pre>
+        </div>
+
+        <!-- Tab 4: JSON Schema -->
+        <div *ngIf="sheetTab === 'json'" class="sheet-grouped-section">
+          <pre class="ios-code-box json-color">{{ formatJsonString(selectedDoc) }}</pre>
+        </div>
+
+      </div>
+
+      <!-- Sheet Footer Actions -->
+      <div class="sheet-footer">
+        <button (click)="copyJson(selectedDoc)" class="sheet-btn sheet-btn-secondary">
+          <span class="material-symbols-outlined">content_copy</span>
+          {{ copiedDocId === selectedDoc.id ? 'Copied!' : 'Copy JSON' }}
+        </button>
+
+        <button (click)="downloadJson(selectedDoc)" class="sheet-btn sheet-btn-primary">
+          <span class="material-symbols-outlined">download</span>
+          Export JSON
+        </button>
+
+        <button (click)="deleteDoc(selectedDoc.id)" class="sheet-btn sheet-btn-danger">
+          <span class="material-symbols-outlined">delete</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

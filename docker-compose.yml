@@ -1,0 +1,30 @@
+services:
+  ocr-service:
+    build:
+      context: ./ocr-service
+      dockerfile: Dockerfile
+    container_name: ocr-service
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./ocr-service/.env
+    networks:
+      - ocr-network
+
+  ocr-frontend:
+    build:
+      context: ./ocr-frontend
+      dockerfile: Dockerfile
+    container_name: ocr-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - ocr-service
+    networks:
+      - ocr-network
+
+networks:
+  ocr-network:
+    driver: bridge

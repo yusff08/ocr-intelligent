@@ -1,0 +1,166 @@
+.ios-tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(64px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: rgba(28, 28, 30, 0.88);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-top: 0.5px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Hide iOS Bottom Tab Bar on Desktop screens (> 768px) */
+@media (min-width: 769px) {
+  .ios-tab-bar {
+    display: none !important;
+  }
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #8E8E93;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 16px;
+  border-radius: 12px;
+  transition: transform 0.15s, color 0.15s;
+}
+
+.tab-item:active {
+  transform: scale(0.92);
+}
+
+.tab-icon {
+  font-size: 26px;
+  margin-bottom: 2px;
+}
+
+.tab-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: -0.1px;
+}
+
+.active-tab {
+  color: #0A84FF !important;
+}
+
+.active-tab .tab-icon {
+  font-variation-settings: 'FILL' 1;
+}
+
+/* iOS Modal Action Sheet Backdrop */
+.ios-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.ios-action-sheet {
+  width: 100%;
+  max-width: 480px;
+  margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  padding: 1rem;
+  background: rgba(36, 36, 38, 0.95);
+  backdrop-filter: blur(35px);
+  -webkit-backdrop-filter: blur(35px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+  animation: slideUp 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.sheet-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1rem;
+}
+
+.sheet-avatar {
+  font-size: 2rem;
+}
+
+.sheet-user-info h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.sheet-user-info p {
+  font-size: 0.9rem;
+  color: #8E8E93;
+  margin: 0;
+}
+
+.sheet-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sheet-btn {
+  width: 100%;
+  padding: 0.95rem;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.1s;
+}
+
+.sheet-btn:active {
+  transform: scale(0.98);
+  opacity: 0.85;
+}
+
+.sheet-btn-danger {
+  background: rgba(255, 69, 58, 0.2);
+  color: #FF453A;
+  border: 1px solid rgba(255, 69, 58, 0.3);
+}
+
+.sheet-btn-primary {
+  background: #0A84FF;
+  color: #FFFFFF;
+}
+
+.sheet-btn-cancel {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}

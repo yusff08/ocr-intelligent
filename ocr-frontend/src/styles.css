@@ -1,0 +1,144 @@
+:root {
+  /* iOS Apple HIG Design Tokens & Color Palette */
+  --bg-main: #000000;
+  --bg-card: rgba(28, 28, 30, 0.75);
+  --bg-card-hover: rgba(44, 44, 46, 0.85);
+  --bg-glass-input: rgba(44, 44, 46, 0.6);
+  --border-glass: rgba(255, 255, 255, 0.12);
+  --border-active: #0A84FF;
+  
+  /* Apple iOS System Colors */
+  --ios-blue: #0A84FF;
+  --ios-green: #30D158;
+  --ios-indigo: #5E5CE6;
+  --ios-orange: #FF9F0A;
+  --ios-pink: #FF375F;
+  --ios-purple: #BF5AF2;
+  --ios-red: #FF453A;
+  --ios-teal: #64D2FF;
+  --ios-yellow: #FFD60A;
+
+  --accent-cyan: #64D2FF;
+  --accent-indigo: #0A84FF;
+  --accent-purple: #BF5AF2;
+  --accent-emerald: #30D158;
+  --accent-amber: #FF9F0A;
+  --accent-rose: #FF453A;
+  
+  --gradient-primary: linear-gradient(135deg, #0A84FF 0%, #5E5CE6 50%, #64D2FF 100%);
+  --gradient-glow: linear-gradient(135deg, rgba(10, 132, 255, 0.25) 0%, rgba(94, 92, 230, 0.25) 100%);
+  
+  --text-main: #FFFFFF;
+  --text-muted: #EBEBF5;
+  --text-dim: #8E8E93;
+
+  /* Apple SF Typography */
+  --font-family-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-family-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  --font-family-mono: "SF Mono", "Fira Code", monospace;
+  
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  
+  --shadow-glow: 0 0 25px rgba(10, 132, 255, 0.3);
+  --shadow-card: 0 12px 36px rgba(0, 0, 0, 0.6);
+
+  /* iOS Safe Area Environment Variables */
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  color: var(--text-main);
+  font-family: var(--font-family-sans);
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body {
+  padding-top: var(--sat);
+  padding-bottom: calc(var(--sab) + 70px); /* Room for bottom iOS Tab Bar on mobile */
+  padding-left: var(--sal);
+  padding-right: var(--sar);
+  background-image: 
+    radial-gradient(circle at 20% 10%, rgba(10, 132, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 90%, rgba(94, 92, 230, 0.12) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+@media (min-width: 769px) {
+  body {
+    padding-bottom: 0px;
+  }
+}
+
+/* iOS Glassmorphism Card Utility */
+.ios-glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+/* Material Symbols alignment */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  vertical-align: middle;
+}
+
+/* Touch Scrolling Optimization */
+.ios-scrollable {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+}
+
+/* Custom iOS Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}

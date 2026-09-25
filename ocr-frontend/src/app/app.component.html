@@ -1,0 +1,52 @@
+<div class="app-layout">
+  <!-- Header Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <a routerLink="/" class="brand-link">
+          <div class="logo-box">
+            <span class="material-symbols-outlined logo-icon">document_scanner</span>
+          </div>
+          <div class="brand-text">
+            <h1>Intelligent OCR Service</h1>
+            <p>PaddleOCR Engine & LLM Structuring</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Navigation Links for Desktop -->
+      <nav *ngIf="authService.isLoggedIn()" class="nav-links desktop-nav">
+        <a routerLink="/dashboard" routerLinkActive="active-link" class="nav-item">
+          💻 Workspace
+        </a>
+        <a routerLink="/history" routerLinkActive="active-link" class="nav-item">
+          📜 Scan History
+        </a>
+      </nav>
+
+      <!-- User Profile & Logout -->
+      <div class="header-right">
+        <div *ngIf="authService.isLoggedIn()" class="user-badge desktop-only">
+          <span class="user-avatar">👤</span>
+          <span class="user-email">{{ authService.currentUser()?.email }}</span>
+          <button (click)="onLogout()" class="btn-logout" title="Sign Out">
+            🚪 Logout
+          </button>
+        </div>
+
+        <div *ngIf="!authService.isLoggedIn()" class="guest-actions">
+          <a routerLink="/login" class="btn-login-nav">Sign In</a>
+          <a routerLink="/register" class="btn-register-nav">Register</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Router Outlet for Dynamic Views -->
+  <main class="router-main">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Native iOS Bottom Tab Navigation Bar -->
+  <app-navigation></app-navigation>
+</div>

@@ -1,0 +1,34 @@
+<div class="dashboard-wrapper">
+  <!-- Error Toast Banner -->
+  <div class="error-banner" *ngIf="errorMessage">
+    <div class="error-content">
+      <span class="material-symbols-outlined error-icon">warning</span>
+      <span>{{ errorMessage }}</span>
+    </div>
+    <button type="button" class="btn-dismiss" (click)="dismissError()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <!-- Main Grid Workspace -->
+  <main class="main-content">
+    <div class="workspace-grid">
+      <!-- Left Column: Document Upload Component -->
+      <section class="grid-col">
+        <app-document-upload 
+          (textExtracted)="onTextExtracted($event)" 
+          (documentAnalyzed)="onDocumentAnalyzed($event)" 
+          (errorOccurred)="onErrorOccurred($event)">
+        </app-document-upload>
+      </section>
+
+      <!-- Right Column: Result Viewer Component -->
+      <section class="grid-col">
+        <app-result-viewer 
+          [rawTextResult]="rawTextResult" 
+          [analyzeResult]="analyzeResult">
+        </app-result-viewer>
+      </section>
+    </div>
+  </main>
+</div>

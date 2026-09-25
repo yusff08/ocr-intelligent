@@ -1,0 +1,564 @@
+.ios-history-container {
+  max-width: 1200px;
+  margin: 1.25rem auto;
+  padding: 0 1.25rem;
+  padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* iOS Page Header Row */
+.ios-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-titles h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: -0.5px;
+  margin: 0 0 0.2rem 0;
+}
+
+.header-titles p {
+  color: #8E8E93;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.btn-ios-refresh {
+  background: rgba(44, 44, 46, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #0A84FF;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.btn-ios-refresh:active {
+  transform: scale(0.92);
+}
+
+/* iOS Glassmorphic Search Bar */
+.ios-search-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  color: #8E8E93;
+  font-size: 20px;
+  pointer-events: none;
+}
+
+.ios-search-input {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 2.6rem;
+  background: rgba(44, 44, 46, 0.65);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.ios-search-input:focus {
+  border-color: #0A84FF;
+}
+
+.btn-clear-search {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #8E8E93;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* iOS Segmented Control Pills */
+.ios-segmented-control {
+  display: flex;
+  background: rgba(44, 44, 46, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 3px;
+  gap: 4px;
+}
+
+.segment-pill {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #8E8E93;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.55rem 0.5rem;
+  border-radius: 11px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
+  text-align: center;
+}
+
+.segment-pill:active {
+  transform: scale(0.96);
+}
+
+.segment-pill.active {
+  color: #FFFFFF;
+  background: #636366;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* States */
+.ios-loading-card, .ios-empty-card {
+  background: rgba(28, 28, 30, 0.75);
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.ios-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(10, 132, 255, 0.2);
+  border-radius: 50%;
+  border-top-color: #0A84FF;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.empty-icon {
+  font-size: 3.5rem;
+  color: #8E8E93;
+}
+
+.btn-ios-action {
+  padding: 0.75rem 1.5rem;
+  background: #0A84FF;
+  color: #FFFFFF;
+  border-radius: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 0.5rem;
+}
+
+/* iOS Inset Grouped Card List */
+.ios-grouped-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.ios-inset-card {
+  background: rgba(28, 28, 30, 0.75);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 1.1rem 1.25rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ios-inset-card:active {
+  transform: scale(0.98);
+  border-color: #0A84FF;
+}
+
+.card-main-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.doc-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(10, 132, 255, 0.15);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0A84FF;
+  flex-shrink: 0;
+}
+
+.doc-meta-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.vendor-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.doc-badge.invoice {
+  background: rgba(10, 132, 255, 0.15);
+  color: #64D2FF;
+  border: 1px solid rgba(10, 132, 255, 0.3);
+}
+
+.doc-badge.receipt {
+  background: rgba(255, 159, 10, 0.15);
+  color: #FF9F0A;
+  border: 1px solid rgba(255, 159, 10, 0.3);
+}
+
+.doc-badge.generic {
+  background: rgba(142, 142, 147, 0.15);
+  color: #8E8E93;
+  border: 1px solid rgba(142, 142, 147, 0.3);
+}
+
+.filename-row {
+  font-size: 0.85rem;
+  color: #EBEBF5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.2rem;
+}
+
+.sub-row {
+  font-size: 0.78rem;
+  color: #8E8E93;
+}
+
+.inv-num {
+  color: #0A84FF;
+  font-weight: 600;
+}
+
+.amount-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  background: rgba(48, 209, 88, 0.12);
+  border: 1px solid rgba(48, 209, 88, 0.3);
+  padding: 0.4rem 0.75rem;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.amount-val {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #30D158;
+}
+
+.amount-curr {
+  font-size: 0.7rem;
+  color: #8E8E93;
+  text-transform: uppercase;
+}
+
+.card-tap-hint {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: #8E8E93;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 0.5rem;
+}
+
+.chevron {
+  font-size: 1.1rem;
+  color: #636366;
+}
+
+/* Native iOS Bottom Sheet Modal */
+.ios-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.ios-bottom-sheet {
+  width: 100%;
+  max-width: 600px;
+  max-height: 88vh;
+  background: rgba(36, 36, 38, 0.96);
+  backdrop-filter: blur(35px);
+  -webkit-backdrop-filter: blur(35px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 28px 28px 0 0;
+  padding: 0.75rem 1.25rem calc(16px + env(safe-area-inset-bottom, 0px)) 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.7);
+  animation: slideUpSheet 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+@keyframes slideUpSheet {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.sheet-grab-handle {
+  width: 36px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  margin: 0 auto;
+}
+
+.sheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sheet-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sheet-header-left h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 0.15rem 0;
+}
+
+.file-subtitle {
+  font-size: 0.8rem;
+  color: #8E8E93;
+}
+
+.btn-close-sheet {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #FFFFFF;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.sheet-segmented-nav {
+  display: flex;
+  background: rgba(44, 44, 46, 0.8);
+  border-radius: 12px;
+  padding: 3px;
+  gap: 4px;
+}
+
+.sheet-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #8E8E93;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.55rem 0.5rem;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sheet-tab.active {
+  color: #FFFFFF;
+  background: #636366;
+}
+
+.sheet-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sheet-grouped-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.ios-grouped-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  background: rgba(44, 44, 46, 0.6);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.9rem;
+}
+
+.ios-grouped-row.highlight-row {
+  background: rgba(48, 209, 88, 0.12);
+  border-color: rgba(48, 209, 88, 0.3);
+}
+
+.ios-grouped-row .label {
+  color: #8E8E93;
+}
+
+.ios-grouped-row .val {
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.vendor-color { color: #64D2FF !important; }
+.inv-color { color: #0A84FF !important; }
+.total-color { color: #30D158 !important; font-size: 1.05rem; }
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.item-grouped-card {
+  padding: 0.85rem 1rem;
+  background: rgba(44, 44, 46, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.item-desc {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.item-sub {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: #8E8E93;
+}
+
+.item-price {
+  color: #30D158;
+  font-weight: 700;
+}
+
+.ios-code-box {
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 1rem;
+  font-family: "SF Mono", "Fira Code", monospace;
+  font-size: 0.82rem;
+  color: #EBEBF5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 300px;
+  overflow-y: auto;
+  margin: 0;
+}
+
+.json-color { color: #64D2FF; }
+
+.sheet-footer {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sheet-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.85rem;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.sheet-btn:active {
+  transform: scale(0.96);
+}
+
+.sheet-btn-primary {
+  flex: 1;
+  background: #0A84FF;
+  color: #FFFFFF;
+}
+
+.sheet-btn-secondary {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+
+.sheet-btn-danger {
+  background: rgba(255, 69, 58, 0.2);
+  color: #FF453A;
+  border: 1px solid rgba(255, 69, 58, 0.3);
+}

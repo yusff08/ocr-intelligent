@@ -1,3 +1,7 @@
+# Environment & Secrets
+.env
+*.env
+
 # Python
 __pycache__/
 *.py[cod]
@@ -37,3 +41,7 @@ dist/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Databases
+*.db
+*.sqlite3

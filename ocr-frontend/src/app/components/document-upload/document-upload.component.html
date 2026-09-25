@@ -1,0 +1,130 @@
+<div class="upload-card ios-glass-card">
+  <div class="card-header">
+    <div class="header-title">
+      <span class="material-symbols-outlined header-icon">document_scanner</span>
+      <h2>Document Input (Multi-Page Supported)</h2>
+    </div>
+    <span class="badge">PaddleOCR v5</span>
+  </div>
+
+  <!-- iOS Dropzone -->
+  <div 
+    class="dropzone ios-card-dropzone"
+    [class.dragging]="isDragging"
+    [class.has-preview]="previewUrls.length > 0"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+    (click)="toggleActionSheet()">
+
+    <!-- Hidden File & Camera Inputs -->
+    <input 
+      #fileInput 
+      type="file" 
+      accept="image/*,application/pdf" 
+      multiple
+      class="hidden-input" 
+      (change)="onFileSelected($event)">
+    
+    <input 
+      #cameraInput 
+      type="file" 
+      accept="image/*" 
+      capture="environment" 
+      class="hidden-input" 
+      (change)="onFileSelected($event)">
+
+    <!-- Empty Dropzone Content -->
+    <ng-container *ngIf="previewUrls.length === 0">
+      <div class="upload-icon-wrapper">
+        <span class="material-symbols-outlined upload-cloud-icon">file_upload</span>
+      </div>
+      <p class="drop-title">Tap or Drag & Drop Documents Here</p>
+      <p class="drop-subtitle">Supports Single/Multi-Page PDF, JPEG, PNG Invoice Files</p>
+      
+      <div class="upload-options">
+        <button 
+          type="button" 
+          class="btn btn-ios-secondary" 
+          (click)="$event.stopPropagation(); triggerCameraInput(cameraInput)">
+          <span class="material-symbols-outlined">photo_camera</span>
+          Take Photo
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-ios-secondary" 
+          (click)="$event.stopPropagation(); triggerFileInput(fileInput)">
+          <span class="material-symbols-outlined">library_add</span>
+          Choose File(s) / PDF
+        </button>
+      </div>
+    </ng-container>
+
+    <!-- Multi-File Image / Thumbnail Preview Grid -->
+    <ng-container *ngIf="previewUrls.length > 0">
+      <div class="multi-preview-container" (click)="$event.stopPropagation()">
+        <div class="preview-header">
+          <span class="preview-count-badge">{{ selectedFiles.length }} File(s) / Page(s) Selected</span>
+          <button type="button" class="btn-clear-all" (click)="clearSelection()">Clear All</button>
+        </div>
+
+        <div class="thumbnails-grid">
+          <div *ngFor="let url of previewUrls; let idx = index" class="thumbnail-card">
+            <img [src]="url" alt="Page {{ idx + 1 }}" class="thumb-img" />
+            <div class="thumb-info">
+              <span class="thumb-num">P.{{ idx + 1 }}</span>
+              <button type="button" class="thumb-remove" (click)="removeFile(idx)" title="Remove page">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Loading Spinner Overlay -->
+    <div class="loading-overlay" *ngIf="isLoading">
+      <div class="ios-spinner"></div>
+      <p class="loading-text">{{ loadingMessage }}</p>
+    </div>
+  </div>
+
+  <!-- Action Controls -->
+  <div class="card-actions" *ngIf="selectedFiles.length > 0">
+    <button 
+      type="button" 
+      class="btn btn-ios-primary" 
+      [disabled]="isLoading" 
+      (click)="onExtractText()">
+      <span class="material-symbols-outlined">description</span>
+      Extract Text
+    </button>
+    
+    <button 
+      type="button" 
+      class="btn btn-ios-accent" 
+      [disabled]="isLoading" 
+      (click)="onAnalyzeDocument()">
+      <span class="material-symbols-outlined">psychology</span>
+      Analyze AI {{ selectedFiles.length > 1 ? '(' + selectedFiles.length + ' Pages)' : '' }}
+    </button>
+  </div>
+</div>
+
+<!-- iOS Action Sheet Modal -->
+<div *ngIf="showActionSheet" class="ios-modal-backdrop" (click)="toggleActionSheet()">
+  <div class="ios-action-sheet" (click)="$event.stopPropagation()">
+    <div class="sheet-title">Select Document Source</div>
+    <div class="sheet-actions">
+      <button (click)="triggerCameraInput(cameraInput)" class="sheet-btn sheet-btn-primary">
+        📷 Take Photo via Camera
+      </button>
+      <button (click)="triggerFileInput(fileInput)" class="sheet-btn sheet-btn-secondary">
+        🖼️ Choose Image File(s) or PDF
+      </button>
+      <button (click)="toggleActionSheet()" class="sheet-btn sheet-btn-cancel">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>

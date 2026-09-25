@@ -1,0 +1,45 @@
+<!-- Native iOS Bottom Tab Bar -->
+<nav class="ios-tab-bar">
+  <a routerLink="/dashboard" routerLinkActive="active-tab" class="tab-item">
+    <span class="material-symbols-outlined tab-icon">document_scanner</span>
+    <span class="tab-label">Scan & OCR</span>
+  </a>
+
+  <a routerLink="/history" routerLinkActive="active-tab" class="tab-item">
+    <span class="material-symbols-outlined tab-icon">history</span>
+    <span class="tab-label">History</span>
+  </a>
+
+  <button (click)="toggleProfileModal()" class="tab-item btn-tab-profile">
+    <span class="material-symbols-outlined tab-icon">person</span>
+    <span class="tab-label">Profile</span>
+  </button>
+</nav>
+
+<!-- iOS Profile Action Sheet Modal -->
+<div *ngIf="showProfileModal" class="ios-modal-backdrop" (click)="toggleProfileModal()">
+  <div class="ios-action-sheet" (click)="$event.stopPropagation()">
+    <div class="sheet-header">
+      <div class="sheet-avatar">👤</div>
+      <div class="sheet-user-info">
+        <h3>Active Session</h3>
+        <p *ngIf="authService.isLoggedIn()">{{ authService.currentUser()?.email }}</p>
+        <p *ngIf="!authService.isLoggedIn()" class="guest-text">Guest User (Not Signed In)</p>
+      </div>
+    </div>
+
+    <div class="sheet-actions">
+      <button *ngIf="authService.isLoggedIn()" (click)="logout()" class="sheet-btn sheet-btn-danger">
+        🚪 Sign Out of Account
+      </button>
+
+      <button *ngIf="!authService.isLoggedIn()" (click)="router.navigate(['/login']); toggleProfileModal()" class="sheet-btn sheet-btn-primary">
+        🔐 Sign In / Register
+      </button>
+
+      <button (click)="toggleProfileModal()" class="sheet-btn sheet-btn-cancel">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>

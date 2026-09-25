@@ -1,0 +1,220 @@
+<div class="result-card ios-glass-card">
+  <!-- Top Header with System Health Status -->
+  <div class="card-header">
+    <div class="header-title">
+      <span class="material-symbols-outlined header-icon">analytics</span>
+      <h2>Extraction Results</h2>
+    </div>
+    <span class="badge pages-badge" *ngIf="pageCount > 1">{{ pageCount }} Pages Processed</span>
+  </div>
+
+  <!-- iOS Metrics Bar -->
+  <div class="metrics-bar ios-grouped-card">
+    <div class="metric-item">
+      <span class="metric-label">Processing Time</span>
+      <span class="metric-value time-val">{{ processingTime }}</span>
+    </div>
+
+    <div class="metric-item">
+      <span class="metric-label">Confidence Score</span>
+      <span class="metric-value confidence-val">{{ confidenceScore }}</span>
+    </div>
+
+    <div class="metric-item">
+      <span class="metric-label">Document Type</span>
+      <span class="metric-value doc-type-val">{{ documentType }}</span>
+    </div>
+  </div>
+
+  <!-- iOS Segmented Control Pills -->
+  <div class="ios-segmented-control">
+    <button 
+      type="button" 
+      class="segment-btn" 
+      [class.active]="activeTab === 'structured'" 
+      (click)="selectTab('structured')">
+      <span class="material-symbols-outlined segment-icon">data_object</span>
+      Structured Data
+    </button>
+    
+    <button 
+      type="button" 
+      class="segment-btn" 
+      [class.active]="activeTab === 'pages'" 
+      *ngIf="pagesData.length > 0"
+      (click)="selectTab('pages')">
+      <span class="material-symbols-outlined segment-icon">layers</span>
+      Pages & Overlays ({{ pageCount }})
+    </button>
+
+    <button 
+      type="button" 
+      class="segment-btn" 
+      [class.active]="activeTab === 'raw'" 
+      (click)="selectTab('raw')">
+      <span class="material-symbols-outlined segment-icon">subject</span>
+      Raw OCR Text
+    </button>
+  </div>
+
+  <!-- TAB 1: Structured Metadata View -->
+  <div class="tab-content ios-scrollable" *ngIf="activeTab === 'structured'">
+    <ng-container *ngIf="analyzeResult; else noAnalyzeState">
+      
+      <!-- Key Value Summary Grid -->
+      <div class="metadata-grid">
+        <div class="meta-card ios-grouped-card">
+          <span class="meta-label">Vendor Name</span>
+          <span class="meta-value vendor-val">{{ analyzeResult.metadata.vendor_name || 'N/A' }}</span>
+        </div>
+
+        <div class="meta-card ios-grouped-card">
+          <span class="meta-label">Invoice Number</span>
+          <span class="meta-value inv-val">{{ analyzeResult.metadata.invoice_number || 'N/A' }}</span>
+        </div>
+
+        <div class="meta-card ios-grouped-card">
+          <span class="meta-label">Issue Date</span>
+          <span class="meta-value">{{ analyzeResult.metadata.issue_date || 'N/A' }}</span>
+        </div>
+
+        <div class="meta-card ios-grouped-card">
+          <span class="meta-label">Due Date</span>
+          <span class="meta-value">{{ analyzeResult.metadata.due_date || 'N/A' }}</span>
+        </div>
+
+        <div class="meta-card ios-grouped-card">
+          <span class="meta-label">Currency</span>
+          <span class="meta-value currency-val">{{ analyzeResult.metadata.currency || 'EUR' }}</span>
+        </div>
+
+        <div class="meta-card ios-grouped-card highlight-card">
+          <span class="meta-label">Total Amount</span>
+          <span class="meta-value total-val">
+            {{ analyzeResult.metadata.total_amount | number:'1.2-2' }} {{ analyzeResult.metadata.currency || 'EUR' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Financial Totals Row -->
+      <div class="financials-row ios-grouped-card">
+        <div class="fin-item">
+          <span>Subtotal:</span>
+          <strong>{{ analyzeResult.metadata.subtotal | number:'1.2-2' }} {{ analyzeResult.metadata.currency }}</strong>
+        </div>
+        <div class="fin-item">
+          <span>Tax Amount:</span>
+          <strong>{{ analyzeResult.metadata.tax_amount | number:'1.2-2' }} {{ analyzeResult.metadata.currency }}</strong>
+        </div>
+      </div>
+
+      <!-- iOS Line Items Section (Merged across all pages) -->
+      <div class="line-items-section">
+        <h3 class="section-title">
+          <span class="material-symbols-outlined">receipt_long</span>
+          Consolidated Line Items ({{ analyzeResult.metadata.items.length || 0 }})
+        </h3>
+
+        <!-- Responsive Card List for Mobile Screens -->
+        <div class="ios-items-list" *ngIf="analyzeResult.metadata.items.length > 0; else noItemsState">
+          <div *ngFor="let item of analyzeResult.metadata.items" class="ios-grouped-card item-card">
+            <div class="item-desc">{{ item.description }}</div>
+            <div class="item-meta-row">
+              <span class="item-qty">Qty: {{ item.quantity }} × {{ item.unit_price | number:'1.2-2' }}</span>
+              <span class="item-total">{{ item.total_price | number:'1.2-2' }} {{ analyzeResult.metadata.currency }}</span>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noItemsState>
+          <p class="empty-hint">No itemized breakdown detected in this document.</p>
+        </ng-template>
+      </div>
+
+    </ng-container>
+
+    <ng-template #noAnalyzeState>
+      <div class="empty-state">
+        <span class="material-symbols-outlined empty-icon">plagiarism</span>
+        <p class="empty-title">No Structured Analysis Yet</p>
+        <p class="empty-desc">Upload or snap a document photo and click "Analyze AI" to extract structured fields and line items.</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- TAB 2: Per-Page Visual Bounding Boxes -->
+  <div class="tab-content ios-scrollable" *ngIf="activeTab === 'pages'">
+    <div class="page-selector-bar" *ngIf="pagesData.length > 0">
+      <span class="selector-label">Select Page:</span>
+      <div class="page-pills">
+        <button 
+          *ngFor="let p of pagesData; let idx = index" 
+          type="button" 
+          class="page-pill" 
+          [class.active]="selectedPageIndex === idx"
+          (click)="selectPage(idx)">
+          Page {{ idx + 1 }}
+        </button>
+      </div>
+    </div>
+
+    <div class="page-preview-container" *ngIf="currentPage">
+      <div class="page-meta-header">
+        <span class="page-title">Page {{ currentPage.page_number }} of {{ pagesData.length }}</span>
+        <span class="box-count-badge">{{ currentPageBoxes.length }} OCR Bounding Boxes</span>
+      </div>
+
+      <div class="overlay-wrapper" *ngIf="currentPage.preview_url">
+        <img [src]="currentPage.preview_url" alt="Page {{ currentPage.page_number }} preview" class="overlay-bg-img" />
+        
+        <!-- Bounding Box Overlays -->
+        <div 
+          *ngFor="let box of currentPageBoxes" 
+          class="ocr-bbox" 
+          [style.left.px]="box.x_min" 
+          [style.top.px]="box.y_min" 
+          [style.width.px]="(box.x_max - box.x_min)" 
+          [style.height.px]="(box.y_max - box.y_min)"
+          [title]="box.text + ' (Conf: ' + box.confidence + ')'">
+          <span class="bbox-label">{{ box.text }}</span>
+        </div>
+      </div>
+
+      <div class="page-text-card ios-grouped-card" *ngIf="currentPage.raw_text">
+        <h4>Page {{ currentPage.page_number }} Extracted Text:</h4>
+        <pre class="page-raw">{{ currentPage.raw_text }}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: Raw OCR Text View -->
+  <div class="tab-content ios-scrollable" *ngIf="activeTab === 'raw'">
+    <ng-container *ngIf="rawTextResult || analyzeResult?.raw_text; else noRawState">
+      
+      <div class="raw-actions">
+        <span class="raw-title">Extracted Text Stream</span>
+        <button 
+          type="button" 
+          class="btn-copy" 
+          [class.copied]="copied" 
+          (click)="copyToClipboard()">
+          <span class="material-symbols-outlined">{{ copied ? 'check' : 'content_copy' }}</span>
+          {{ copied ? 'Copied!' : 'Copy Text' }}
+        </button>
+      </div>
+
+      <div class="raw-text-container ios-grouped-card">
+        <pre class="raw-code">{{ rawTextResult?.text || analyzeResult?.raw_text }}</pre>
+      </div>
+
+    </ng-container>
+
+    <ng-template #noRawState>
+      <div class="empty-state">
+        <span class="material-symbols-outlined empty-icon">find_in_page</span>
+        <p class="empty-title">No Raw OCR Text Extracted</p>
+        <p class="empty-desc">Upload a document and select "Extract Text" or "Analyze AI" to generate text extraction.</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
